@@ -12,11 +12,19 @@ public class AnimKey {
 	
 	protected final String targetlayer;
 	protected final String action;
+	protected final AnimState state;
 	private boolean playing = false;
+	private boolean enabled = true;
 	
-	AnimKey(String targetlayer, String action) {
+	public AnimKey(AnimState state, String targetlayer, String action) {
+		this.state = state;
+		this.state.add(this);
 		this.targetlayer = targetlayer;
 		this.action = action;
+	}
+	public AnimKey(AnimState state, String targetlayer, String action, boolean enabled) {
+		this(state, targetlayer, action);
+		enable(enabled);
 	}
 	
 	protected boolean play() {
@@ -30,7 +38,13 @@ public class AnimKey {
 	protected void setPlaying(boolean playing) {
 		this.playing = playing;
 	}
+	public void enable(boolean enable) {
+		enabled = enable;
+	}
 	
+	public AnimState getState() {
+		return state;
+	}
 	public String getTargetLayer() {
 		return targetlayer;
 	}
@@ -39,6 +53,9 @@ public class AnimKey {
 	}
 	public boolean isPlaying() {
 		return playing;
+	}
+	public boolean isEnabled() {
+		return enabled && state.isEnabled();
 	}
 	
 	@Override

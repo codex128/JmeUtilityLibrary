@@ -15,8 +15,7 @@ import java.util.HashSet;
 public class AnimState extends HashSet<AnimKey> {
 	
 	String name;
-	boolean enabled = true;
-	AnimGroup group;
+	boolean enabled = false;
 	
 	public AnimState(String name) {
 		setName(name);
@@ -26,8 +25,10 @@ public class AnimState extends HashSet<AnimKey> {
 		enable(enabled);
 	}
 	
-	public boolean add(String targetlayer, String action) {
-		return add(createAnimKey(targetlayer, action));
+	public AnimKey add(String targetlayer, String action) {
+		AnimKey key = createAnimKey(targetlayer, action);
+		add(key);
+		return key;
 	}
 	public String getActionForLayer(String layer) {
 		for (AnimKey key : this) {
@@ -46,25 +47,13 @@ public class AnimState extends HashSet<AnimKey> {
 		return null;
 	}
 	protected AnimKey createAnimKey(String targetlayer, String action) {
-		return new AnimKey(targetlayer, action);
+		return new AnimKey(this, targetlayer, action);
 	}
 	
 	protected void playKey(AnimKey key, AnimComposer anim) {
-		System.out.println(this+"  "+key);
 		anim.setCurrentAction(key.getAction(), key.getTargetLayer());
 	}
-	protected void stopKeyInLayer(String layer) {
-		AnimKey key = getKeyForLayer(layer);
-		if (key != null) key.stop();
-	}
-	
-	protected void setAffiliatedGroup(AnimGroup group) {
-		this.group = group;
-	}
-	public void joinGroup(AnimGroup group) {
-		group.add(this);
-	}
-	
+		
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -86,7 +75,7 @@ public class AnimState extends HashSet<AnimKey> {
 		return actions;
 	}
 	public boolean isEnabled() {
-		return enabled && (group == null || group.isEnabled());
+		return enabled;
 	}
 	
 	@Override

@@ -24,7 +24,6 @@ public class SynchronizedAnimState extends AnimState {
 	
 	@Override
 	protected void playKey(AnimKey key, AnimComposer anim) {
-		System.out.println(this+"  "+key);
 		double time = 0d;
 		for (AnimKey k : this) if (!k.getTargetLayer().equals(key.getTargetLayer()) && k.isPlaying()) {
 			time = anim.getTime(k.getTargetLayer());

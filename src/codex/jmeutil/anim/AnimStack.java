@@ -12,11 +12,20 @@ import java.util.LinkedList;
  * 
  * @author gary
  */
-class AnimStack extends LinkedList<AnimState> {
+public class AnimStack extends LinkedList<AnimKey> {
+	
+	private final String targetlayer;
+	
+	public AnimStack(String targetlayer) {
+		this.targetlayer = targetlayer;
+	}
 	
 	@Override
 	public Iterator iterator() {
 		return descendingIterator();
+	}
+	public String getTargetLayer() {
+		return targetlayer;
 	}
 	
 }
