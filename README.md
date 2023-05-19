@@ -100,6 +100,7 @@ This utility is still under development, and their might be some underlying bugs
 
 Usage:
 ```<Java>
+Spatial person = ...;
 AnimState idle = new AnimState("idle", true);
 idle.add("body", "idle_body");
 idle.add("legs", "idle_legs");
@@ -123,3 +124,5 @@ And when the character stops running or is not running:
 stack.enableState("run" false);
 ```
 For the sword chopping AnimState, AnimationStackControl will only play it on the "body" layer and leave the "legs" layer alone. This allows the character to be running and chopping *or* idle and chopping at the same time.
+
+**Node**: AnimStackControl only functions if the spatial it is controlling also has an AnimComposer.
