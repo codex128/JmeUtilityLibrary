@@ -125,4 +125,4 @@ stack.enableState("run" false);
 ```
 For the sword chopping AnimState, AnimationStackControl will only play it on the "body" layer and leave the "legs" layer alone. This allows the character to be running and chopping *or* idle and chopping at the same time.
 
-**Node**: AnimStackControl only functions if the spatial it is controlling also has an AnimComposer.
+**Note**: AnimStackControl only functions if the spatial it is controlling also has an AnimComposer.
