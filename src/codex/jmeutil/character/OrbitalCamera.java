@@ -278,7 +278,7 @@ public class OrbitalCamera extends AbstractControl implements AnalogFunctionList
 	 * default=(0,1,0)
 	 * @param vec 
 	 */
-	public void setCameraUpDirection(Vector3f vec) {
+	public void setUpDirection(Vector3f vec) {
 		up.set(vec);
 		cam.lookAtDirection(cam.getDirection(), up);
 	}

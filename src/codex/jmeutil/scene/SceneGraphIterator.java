@@ -17,6 +17,7 @@ import java.util.LinkedList;
 public class SceneGraphIterator implements Iterable<Spatial>, Iterator<Spatial> {
 
 	LinkedList<PathNode> path = new LinkedList<>();
+	LinkedList<Spatial> detach = new LinkedList<>();
 	
 	public SceneGraphIterator(Spatial main) {
 		if (main instanceof Node) {

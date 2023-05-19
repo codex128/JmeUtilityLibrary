@@ -29,6 +29,7 @@ public class SynchronizedAnimState extends AnimState {
 			time = anim.getTime(k.getTargetLayer());
 			break;
 		}
+		System.out.println("play synced key: "+key+"  at time "+time);
 		anim.setCurrentAction(key.getAction(), key.getTargetLayer());
 		anim.setTime(key.getTargetLayer(), time);
 	}

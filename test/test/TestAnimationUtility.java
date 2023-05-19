@@ -25,7 +25,12 @@ import com.simsilica.lemur.input.InputState;
 import com.simsilica.lemur.input.StateFunctionListener;
 
 /**
- *
+ * Testing Animation Utility.
+ * 
+ * Hold A to run.
+ * Press S to chop.
+ * Press D to stab.
+ * 
  * @author gary
  */
 public class TestAnimationUtility extends SimpleApplication implements StateFunctionListener {
@@ -33,7 +38,8 @@ public class TestAnimationUtility extends SimpleApplication implements StateFunc
 	private static final FunctionId
 			RUN = new FunctionId("main", "run"),
 			CHOP = new FunctionId("main", "chop"),
-			STAB = new FunctionId("main", "stab");
+			STAB = new FunctionId("main", "stab"),
+			LOG = new FunctionId("main", "log");
 	
 	AnimStackControl stack;
 	
@@ -63,8 +69,6 @@ public class TestAnimationUtility extends SimpleApplication implements StateFunc
 		anim.makeLayer("legs", legmask);
 		anim.setCurrentAction("idle_body", "body");
 		anim.setCurrentAction("idle_legs", "legs");
-		anim.action("run_body").setSpeed(1.5);
-		anim.action("run_legs").setSpeed(1.5);
 		stack = new AnimStackControl();
 		anim.actionSequence("chop_once", anim.action("chop"), new TargetTween<AnimStackControl>(stack) {
 			@Override
@@ -103,6 +107,10 @@ public class TestAnimationUtility extends SimpleApplication implements StateFunc
 		stack.add(stabBody);
 		person.addControl(stack);
 		
+		//stack.enableState("stab", true);
+		//anim.setCurrentAction("stab_once_body", "body");
+		//anim.setCurrentAction("stab_once_legs", "legs");
+		
 		OrbitalCamera camera = new OrbitalCamera(cam, im);
 		camera.getDistanceDomain().set(15f, 20f);
 		camera.setOffsets(new Vector3f(0f, 2.5f, 0f));
@@ -112,7 +120,8 @@ public class TestAnimationUtility extends SimpleApplication implements StateFunc
 		im.map(RUN, KeyInput.KEY_A);
 		im.map(CHOP, KeyInput.KEY_S);
 		im.map(STAB, KeyInput.KEY_D);
-		im.addStateListener(this, RUN, CHOP, STAB);
+		im.map(LOG, KeyInput.KEY_SPACE);
+		im.addStateListener(this, RUN, CHOP, STAB, LOG);
 		im.activateGroup("main");
 		
 	}
@@ -127,6 +136,9 @@ public class TestAnimationUtility extends SimpleApplication implements StateFunc
 		}
 		else if (func == STAB && value != InputState.Off) {
 			stack.enableState("stab", true);
+		}
+		else if (func == LOG && value != InputState.Off) {
+			System.out.println("LOG");
 		}
 	}
 	

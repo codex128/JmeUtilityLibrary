@@ -27,15 +27,8 @@ public class AnimKey {
 		enable(enabled);
 	}
 	
-	protected boolean play() {
-		setPlaying(true);
-		return true;
-	}
-	protected boolean stop() {
-		setPlaying(false);
-		return true;
-	}
 	protected void setPlaying(boolean playing) {
+		System.out.println(this+" set as playing ("+playing+")");
 		this.playing = playing;
 	}
 	public void enable(boolean enable) {

@@ -124,12 +124,11 @@ public class AnimStackControl extends SubControl<AnimComposer> {
 				}
 				AnimKey prev = current.get(layer);
 				if (prev != key) {
-					if (!key.play()) {
-						continue;
-					}
-					if (prev != null) prev.stop();
+					if (prev != null) prev.setPlaying(false);
+					key.setPlaying(true);
 					key.getState().playKey(key, dependency);
 					current.put(layer, key);
+					System.out.println("enacting key: "+key);
 				}
 				break;
 			}
