@@ -2,11 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package codex.jmeutil.es;
+package codex.jmeutil.es.update;
 
+import codex.jmeutil.es.bullet.EntityPhysics;
+import codex.jmeutil.es.bullet.PhysicsTransform;
 import codex.jmeutil.es.components.Position;
-import codex.jmeutil.es.components.Visual;
-import com.jme3.app.Application;
+import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
 
@@ -15,17 +16,12 @@ import com.simsilica.es.Entity;
  * 
  * @author gary
  */
-public class PositionUpdateState extends TransformUpdateState {
+public class PositionUpdateState extends ComponentUpdateState {
 	
-	@Override
-	protected void init(Application app) {
-		updateSpatial = ed.getEntities(
-				getAutoTransformFilter(true),
-				Visual.class, Position.class);
-		updateEntity = ed.getEntities(
-				getAutoTransformFilter(false),
-				Visual.class, Position.class);
+	public PositionUpdateState() {
+		super(Position.class);
 	}
+	
 	@Override
 	protected void onEnable() {}
 	@Override
@@ -36,8 +32,12 @@ public class PositionUpdateState extends TransformUpdateState {
 		s.setLocalTranslation(e.get(Position.class).getPosition());
 	}
 	@Override
-	public void updateEntity(Entity e, Spatial s) {
+	public void updateEntity(Entity e, Spatial s, EntityPhysics p) {
 		e.set(new Position(s.getLocalTranslation()));
+	}
+	@Override
+	public void updatePhysics(EntityPhysics p, Entity e) {
+		p.setEntityPhysicsPosition(e.get(Position.class).getPosition());
 	}
 	
 }

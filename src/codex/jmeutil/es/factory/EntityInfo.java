@@ -4,7 +4,6 @@
  */
 package codex.jmeutil.es.factory;
 
-import com.jme3.asset.AssetManager;
 import com.simsilica.es.EntityData;
 import com.simsilica.es.EntityId;
 
@@ -12,23 +11,18 @@ import com.simsilica.es.EntityId;
  *
  * @author gary
  */
-public class ModelTools {
+public class EntityInfo {
 	
-	public EntityData ed;
-	public AssetManager assetManager;
-	public EntityId entity;
+	public final EntityData ed;
+	public final EntityId entity;
 	
-	public ModelTools(EntityData ed, AssetManager assets, EntityId entity) {
+	public EntityInfo(EntityData ed, EntityId entity) {
 		this.ed = ed;
-		this.assetManager = assets;
 		this.entity = entity;
 	}
 	
-	public EntityData getEd() {
+	public EntityData getEntityData() {
 		return ed;
-	}
-	public AssetManager getAssetManager() {
-		return assetManager;
 	}
 	public EntityId getEntity() {
 		return entity;

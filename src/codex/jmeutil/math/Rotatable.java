@@ -2,16 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package codex.jmeutil.es.factory;
+package codex.jmeutil.math;
 
-import com.simsilica.es.EntityId;
+import com.jme3.math.Quaternion;
 
 /**
  *
  * @author gary
  */
-public interface EntitySpawnListener {
+public interface Rotatable {
 	
-	public abstract void onEntitySpawn(EntityId entity);
+	public void setRotation(Quaternion rotation);
+	public Quaternion getRotation();
 	
 }

@@ -115,7 +115,7 @@ public class AnimStackControl extends SubControl<AnimComposer> {
 	public void refreshCurrentActions() {
 		if (!hasDependency()) return;
 		Set<String> names = dependency.getLayerNames();
-		for (String layer : names) {
+		main: for (String layer : names) {
 			AnimStack stack = getStack(layer);
 			if (stack == null) continue;
 			for (AnimKey key : stack) {
@@ -128,10 +128,13 @@ public class AnimStackControl extends SubControl<AnimComposer> {
 					key.setPlaying(true);
 					key.getState().playKey(key, dependency);
 					current.put(layer, key);
-					System.out.println("enacting key: "+key);
 				}
-				break;
+				continue main;
 			}
+			System.out.println("stop action on layer "+layer);
+			AnimKey prev = current.remove(layer);
+			if (prev != null) prev.setPlaying(false);
+			dependency.removeCurrentAction(layer);
 		}
 	}
 	/**

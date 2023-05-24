@@ -6,7 +6,7 @@ package codex.jmeutil.es;
 
 import codex.jmeutil.es.factory.ModelFactory;
 import codex.jmeutil.es.components.Visual;
-import codex.jmeutil.es.factory.ModelTools;
+import codex.jmeutil.es.factory.ModelManufactureTools;
 import codex.jmeutil.es.factory.SimpleModelFactory;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -103,7 +103,7 @@ public class VisualState extends BaseAppState {
 				if (factory == null) {
 					factory = factories.get(DEFAULT_MODEL_FACTORY);
 				}
-				spatial = factory.createModel(new ModelTools(ed, getApplication().getAssetManager(), e.getId()));
+				spatial = factory.createModel(new ModelManufactureTools(ed, getApplication().getAssetManager(), e.getId()));
 			}
 			if (spatial == null) {
 				spatial = createSimpleCube(getAssetManager(), 1f);

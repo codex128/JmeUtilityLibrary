@@ -51,8 +51,7 @@ public class AnimState extends HashSet<AnimKey> {
 	}
 	
 	protected void playKey(AnimKey key, AnimComposer anim) {
-		System.out.println("play key: "+key);
-		anim.setCurrentAction(key.getAction(), key.getTargetLayer());
+		anim.setCurrentAction(key.getAction(), key.getTargetLayer(), true);
 	}
 		
 	public void setName(String name) {

@@ -4,15 +4,15 @@
  */
 package codex.jmeutil.es.components;
 
+import codex.jmeutil.math.Positionable;
 import com.jme3.math.Vector3f;
-import com.simsilica.es.EntityComponent;
 
 /**
  * Component representing the entity's position.
  * 
  * @author gary
  */
-public class Position implements EntityComponent {
+public class Position extends AbstractUpdateComponent implements Positionable {
 	
 	public static final Position ZERO = new Position();
 	
@@ -26,9 +26,13 @@ public class Position implements EntityComponent {
 		this.position.set(x, y, z);
 	}
 	
+	@Override
 	public Vector3f getPosition() {
 		return position;
-	}
+	}	
+	@Override
+	public void setPosition(Vector3f position) {}
+	
 	@Override
 	public String toString() {
 		return "Position["+position+"]";

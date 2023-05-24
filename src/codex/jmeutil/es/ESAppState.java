@@ -29,15 +29,17 @@ public abstract class ESAppState extends BaseAppState {
 	protected EntityData ed;
 	protected VisualState visuals;
 	protected BulletAppState bullet;
+	protected PhysicsState physics;
 	protected AssetManager assetManager;
 	protected Vector2f windowSize;
 	
 	@Override
 	protected void initialize(Application app) {
 		this.app = app;
-		ed = requireState(EntityState.class).getEntityData();
-		visuals = requireState(VisualState.class);
+		ed = getState(EntityState.class, true).getEntityData();
+		visuals = getState(VisualState.class);
 		bullet = getState(BulletAppState.class);
+		physics = getState(PhysicsState.class);
 		assetManager = this.app.getAssetManager();
 		windowSize = new Vector2f(
 				app.getContext().getSettings().getWidth(),
@@ -78,11 +80,14 @@ public abstract class ESAppState extends BaseAppState {
 		return visuals;
 	}
 	/**
-	 * Minie physics state.
+	 * First attached BulletAppState instance (null if none is found).
 	 * @return 
 	 */
 	public BulletAppState getBulletState() {
 		return bullet;
+	}
+	public PhysicsState getPhysicsState() {
+		return physics;
 	}
 	public AssetManager getAssetManager() {
 		return assetManager;

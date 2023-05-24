@@ -66,6 +66,7 @@ public class Visual implements EntityComponent {
 	 * @param auto enable/disable auto transform
 	 * @return this Visual instance
 	 */
+	@Deprecated
 	public Visual enableAutoTransform(boolean auto) {
 		autoTransform = auto;
 		return this;
@@ -99,6 +100,7 @@ public class Visual implements EntityComponent {
 	 * Auto transform is enabled for this entity.
 	 * @return 
 	 */
+	@Deprecated
 	public boolean autoTransformEnabled() {
 		return autoTransform;
 	}	

@@ -4,6 +4,7 @@
  */
 package codex.jmeutil.es.components;
 
+import codex.jmeutil.es.TypeIdentifier;
 import com.simsilica.es.ComponentFilter;
 import com.simsilica.es.EntityComponent;
 import com.simsilica.es.Filters;
@@ -13,7 +14,7 @@ import com.simsilica.es.Filters;
  * 
  * @author gary
  */
-public class GameObject implements EntityComponent {
+public class GameObject implements EntityComponent, TypeIdentifier<String> {
 	
 	private final String type;
 	
@@ -21,12 +22,15 @@ public class GameObject implements EntityComponent {
 		this.type = type;
 	}
 	
+	@Override
 	public String getType() {
 		return type;
 	}
 	@Override
+	public void setType(String type) {}
+	@Override
 	public String toString() {
-		return "GameObject["+type+"]";
+		return getClass().getSimpleName()+"["+type+"]";
 	}
 	
 	/**
@@ -46,7 +50,7 @@ public class GameObject implements EntityComponent {
 	 * @return 
 	 */
 	public static ComponentFilter filterGameObject(String type) {
-		return Filters.fieldEquals(GameObject.class, "type", type);
+		return filterGameObject(GameObject.class, type);
 	}
 	
 }

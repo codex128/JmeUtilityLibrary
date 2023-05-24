@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package codex.jmeutil.es;
+package codex.jmeutil.es.update;
 
+import codex.jmeutil.es.bullet.EntityPhysics;
 import codex.jmeutil.es.components.Rotation;
-import codex.jmeutil.es.components.Visual;
-import com.jme3.app.Application;
+import com.jme3.bullet.objects.PhysicsBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
 
@@ -15,17 +17,12 @@ import com.simsilica.es.Entity;
  * 
  * @author gary
  */
-public class RotationUpdateState extends TransformUpdateState {
-
-	@Override
-	protected void init(Application app) {
-		updateSpatial = ed.getEntities(
-				getAutoTransformFilter(true),
-				Visual.class, Rotation.class);
-		updateEntity = ed.getEntities(
-				getAutoTransformFilter(false),
-				Visual.class, Rotation.class);
+public class RotationUpdateState extends ComponentUpdateState {
+	
+	public RotationUpdateState() {
+		super(Rotation.class);
 	}
+	
 	@Override
 	protected void onEnable() {}
 	@Override
@@ -36,8 +33,12 @@ public class RotationUpdateState extends TransformUpdateState {
 		s.setLocalRotation(e.get(Rotation.class).getRotation());
 	}
 	@Override
-	public void updateEntity(Entity e, Spatial s) {
+	public void updateEntity(Entity e, Spatial s, EntityPhysics p) {
 		e.set(new Rotation(s.getLocalRotation()));
+	}
+	@Override
+	public void updatePhysics(EntityPhysics p, Entity e) {
+		p.setEntityPhysicsRotation(e.get(Rotation.class).getRotation());
 	}
 	
 }

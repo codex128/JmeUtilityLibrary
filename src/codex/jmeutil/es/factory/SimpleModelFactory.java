@@ -35,7 +35,7 @@ public class SimpleModelFactory implements ModelFactory {
 			SPHERE = "simple_sphere";
 	
 	@Override
-	public Spatial createModel(ModelTools tools) {
+	public Spatial createModel(ModelManufactureTools tools) {
 		switch (tools.ed.getComponent(tools.entity, Visual.class).getModel()) {
 			case NODE:
 				return createNode(tools);
@@ -50,10 +50,10 @@ public class SimpleModelFactory implements ModelFactory {
 		}
 	}
 	
-	protected Spatial createNode(ModelTools tools) {
+	protected Spatial createNode(ModelManufactureTools tools) {
 		return new Node();
 	}
-	protected Spatial createBox(ModelTools tools) {
+	protected Spatial createBox(ModelManufactureTools tools) {
 		Size size = ModelFactory.getArgumentComponent(tools, new Size(new Vector3f(1f, 1f, 1f)));
 		Color color = ModelFactory.getArgumentComponent(tools, new Color(ColorRGBA.randomColor()));
 		Box box = new Box(size.getSize().x, size.getSize().y, size.getSize().z);
@@ -61,7 +61,7 @@ public class SimpleModelFactory implements ModelFactory {
 		geometry.setMaterial(VisualState.createSimpleMaterial(tools.assetManager, color.getColor()));
 		return geometry;
 	}
-	protected Spatial createCylinder(ModelTools tools) {
+	protected Spatial createCylinder(ModelManufactureTools tools) {
 		MeshSamples samples = ModelFactory.getArgumentComponent(tools, new MeshSamples(2, 16));
 		Size size = ModelFactory.getArgumentComponent(tools, new Size(1f, 2f, 1f));
 		Color color = ModelFactory.getArgumentComponent(tools, new Color(ColorRGBA.randomColor()));
@@ -70,7 +70,7 @@ public class SimpleModelFactory implements ModelFactory {
 		cylinder.setMaterial(VisualState.createSimpleMaterial(tools.assetManager, color.getColor()));
 		return cylinder;
 	}
-	protected Spatial createSphere(ModelTools tools) {
+	protected Spatial createSphere(ModelManufactureTools tools) {
 		MeshSamples samples = ModelFactory.getArgumentComponent(tools, new MeshSamples(2, 16));
 		Size size = ModelFactory.getArgumentComponent(tools, new Size(1f, 2f, 1f));
 		Color color = ModelFactory.getArgumentComponent(tools, new Color(ColorRGBA.randomColor()));
@@ -80,7 +80,7 @@ public class SimpleModelFactory implements ModelFactory {
 		return cylinder;
 	}
 	
-	protected Spatial createOtherModel(ModelTools tools) {
+	protected Spatial createOtherModel(ModelManufactureTools tools) {
 		return null;
 	}
 	

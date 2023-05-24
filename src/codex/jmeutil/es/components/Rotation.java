@@ -4,16 +4,16 @@
  */
 package codex.jmeutil.es.components;
 
+import codex.jmeutil.math.Rotatable;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.simsilica.es.EntityComponent;
 
 /**
  * Component representing the entity's rotation.
  * 
  * @author gary
  */
-public class Rotation implements EntityComponent {
+public class Rotation extends AbstractUpdateComponent implements Rotatable {
 	
 	private final Quaternion rotation = new Quaternion();
 	
@@ -31,9 +31,12 @@ public class Rotation implements EntityComponent {
 		rotation.fromAngles(x, y, z);
 	}
 	
+	@Override
 	public Quaternion getRotation() {
 		return rotation;
 	}
+	@Override
+	public void setRotation(Quaternion rotation) {}
 	@Override
 	public String toString() {
 		return "Rotation["+rotation+"]";

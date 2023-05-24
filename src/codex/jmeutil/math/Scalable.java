@@ -2,18 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package codex.jmeutil.es.factory;
+package codex.jmeutil.math;
 
-import codex.jmeutil.es.factory.EntitySpawner;
 import com.jme3.math.Vector3f;
-import com.simsilica.es.EntityId;
 
 /**
  *
  * @author gary
  */
-public interface EntityFactory {
+public interface Scalable {
 	
-	public abstract EntityId createEntity(EntitySpawner spawner, Vector3f baselocation, Vector3f offset);
+	public void setScale(Vector3f scale);
+	public Vector3f getScale();
+	
+	public default void setScale(float scale) {
+		setScale(new Vector3f(scale, scale, scale));
+	}
 	
 }

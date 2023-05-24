@@ -28,7 +28,7 @@ public interface ModelFactory {
 	 * @param tools tools needed to create models
 	 * @return model, or null if unable
 	 */
-	public abstract Spatial createModel(ModelTools tools);
+	public abstract Spatial createModel(ModelManufactureTools tools);
 	
 	/**
 	 * Get a component under the given id.
@@ -38,7 +38,7 @@ public interface ModelFactory {
 	 * @param defaultvalue default component if no component is found under the id
 	 * @return argument component, or the given default component if none is found
 	 */
-	public static <T extends EntityComponent> T getArgumentComponent(ModelTools tools, T defaultvalue) {
+	public static <T extends EntityComponent> T getArgumentComponent(ModelManufactureTools tools, T defaultvalue) {
 		return getArgumentComponent(tools.ed, tools.entity, defaultvalue);
 	}
 	/**
