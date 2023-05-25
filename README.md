@@ -1,5 +1,6 @@
 # JmeUtilityLibrary
-General use library for JMonkeyEngine 3.
+General use library for JMonkeyEngine 3.<br>
+[Update Log](https://github.com/codex128/JmeUtilityLibrary/blob/master/Updates.md)
 
 # Key Features
 * OrbitalCamera
