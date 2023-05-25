@@ -9,6 +9,7 @@ import codex.jmeutil.es.components.Physics;
 import codex.jmeutil.es.factory.PhysicsFactory;
 import codex.jmeutil.es.factory.PhysicsManufactureTools;
 import com.jme3.app.Application;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntityId;
@@ -28,6 +29,9 @@ public class PhysicsState extends ESAppState {
 	
 	@Override
 	protected void init(Application app) {
+		if (bullet == null) {
+			throw new IllegalStateException("Requires BulletAppState!");
+		}
 		phys = ed.getEntities(Physics.class);
 	}
 	@Override
@@ -57,9 +61,13 @@ public class PhysicsState extends ESAppState {
 		EntityPhysics ep = factory.manufactureEntityPhysics(
 				new PhysicsManufactureTools(ed, e.getId(), spatial));
 		bodies.put(e.getId(), ep);
+		getPhysicsSpace().add(ep);
 	}
 	private void destroyPhysics(Entity e) {
 		bodies.remove(e.getId());
+	}
+	private PhysicsSpace getPhysicsSpace() {
+		return bullet.getPhysicsSpace();
 	}
 	
 	public EntityPhysics getEntityPhysics(EntityId id) {

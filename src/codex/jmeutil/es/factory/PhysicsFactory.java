@@ -9,7 +9,6 @@ import codex.jmeutil.es.bullet.EntityRigidBodyControl;
 import codex.jmeutil.es.components.Mass;
 import codex.jmeutil.es.components.Physics;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.scene.Spatial;
 
@@ -39,7 +38,7 @@ public interface PhysicsFactory {
 		if (shape != null) {
 			rigidbody = new EntityRigidBodyControl(shape, getMass(tools));
 		}
-		else if (!auto) {
+		else if (auto) {
 			rigidbody = new EntityRigidBodyControl(getMass(tools));
 		}
 		else {

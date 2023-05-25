@@ -4,6 +4,7 @@
  */
 package codex.jmeutil.es;
 
+import codex.jmeutil.es.bullet.EntityPhysics;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
@@ -13,6 +14,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.simsilica.es.EntityData;
+import com.simsilica.es.EntityId;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.input.InputMapper;
 
@@ -27,6 +29,7 @@ public abstract class ESAppState extends BaseAppState {
 	
 	protected Application app;
 	protected EntityData ed;
+	protected EntityState entityState;
 	protected VisualState visuals;
 	protected BulletAppState bullet;
 	protected PhysicsState physics;
@@ -36,8 +39,9 @@ public abstract class ESAppState extends BaseAppState {
 	@Override
 	protected void initialize(Application app) {
 		this.app = app;
-		ed = getState(EntityState.class, true).getEntityData();
-		visuals = getState(VisualState.class);
+		entityState = getState(EntityState.class, true);
+		ed = entityState.getEntityData();
+		visuals = getState(VisualState.class, true);
 		bullet = getState(BulletAppState.class);
 		physics = getState(PhysicsState.class);
 		assetManager = this.app.getAssetManager();
@@ -64,25 +68,22 @@ public abstract class ESAppState extends BaseAppState {
 		}
 		return state;
 	}
+	public EntityPhysics getEntityPhysics(EntityId id, EntityPhysics defaultvalue) {
+		if (physics == null) return defaultvalue;
+		EntityPhysics p = physics.getEntityPhysics(id);
+		if (p != null) return p;
+		return defaultvalue;
+	}
 	
-	/**
-	 * Entity data from EntityState (null if EntityState is not attached).
-	 * @return 
-	 */
 	public EntityData getEntityData() {
 		return ed;
 	}
-	/**
-	 * First attached VisualState instance (null if none is found).
-	 * @return 
-	 */
+	public EntityState getEntityState() {
+		return entityState;
+	}
 	public VisualState getVisualState() {
 		return visuals;
 	}
-	/**
-	 * First attached BulletAppState instance (null if none is found).
-	 * @return 
-	 */
 	public BulletAppState getBulletState() {
 		return bullet;
 	}
@@ -92,17 +93,9 @@ public abstract class ESAppState extends BaseAppState {
 	public AssetManager getAssetManager() {
 		return assetManager;
 	}
-	/**
-	 * GuiGlobals InputMapper.
-	 * @return 
-	 */
 	public InputMapper getInputMapper() {
 		return GuiGlobals.getInstance().getInputMapper();
 	}
-	/**
-	 * Context window size.
-	 * @return 
-	 */
 	public Vector2f getWindowSize() {
 		return windowSize;
 	}
@@ -111,6 +104,13 @@ public abstract class ESAppState extends BaseAppState {
 	}
 	public Node getGuiNode() {
 		return ((SimpleApplication)getApplication()).getGuiNode();
+	}
+	
+	public boolean hasBulletPhysics() {
+		return bullet != null;
+	}
+	public boolean hasESPhysics() {
+		return physics != null;
 	}
 	
 }

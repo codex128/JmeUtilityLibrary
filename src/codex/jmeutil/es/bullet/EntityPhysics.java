@@ -9,9 +9,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 /**
- * Interface for porting physics information to entity components and vise versa.
- * 
- * All physics bodies attached to an entity should implement this. 
+ * Interface for porting physics information to entity components and vise versa.All physics bodies attached to an entity should implement this.
+ *  
  * 
  * @author gary
  * @param <T>
@@ -54,12 +53,12 @@ public interface EntityPhysics <T extends PhysicsBody> {
 	
 	/**
 	 * Returns the scale of the entity physics body.
-	 * This method returns (1, 1, 1) by default, but should be overriden if
+	 * This method returns null by default, but should be overriden if
 	 * the body deals with scaling.
 	 * @return 
 	 */
 	public default Vector3f getEntityPhysicsScale() {
-		return new Vector3f(1f, 1f, 1f);
+		return null;
 	}
 	/**
 	 * Sets the scale of the entity physics body.

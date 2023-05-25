@@ -4,21 +4,38 @@
  */
 package codex.jmeutil.es.components;
 
+import codex.jmeutil.es.update.UpdateDirection;
+import com.simsilica.es.EntityComponent;
+
 /**
  *
  * @author gary
  */
 public abstract class AbstractUpdateComponent implements UpdatableComponent {
 	
-	int direction = UpdatableComponent.STABLE_ENTITY2WORLD;
+	UpdateDirection direction = new UpdateDirection();
 	
 	@Override
-	public int getUpdateDirection() {
+	public UpdateDirection getUpdateDirection() {
 		return direction;
 	}
 	@Override
-	public void setDirectionState(int direction) {
-		this.direction = direction;
+	public EntityComponent setUpdateDirection(UpdateDirection dir) {
+		direction = dir;
+		return this;
+	}
+	public EntityComponent setUpdateValue(int value) {
+		direction.setValue(value);
+		return this;
+	}
+	public EntityComponent setUpdateAsStable(boolean stable) {
+		direction.setStable(stable);
+		return this;
+	}
+	public EntityComponent setUpdate(int value, boolean stable) {
+		direction.setValue(value);
+		direction.setStable(stable);
+		return this;
 	}
 	
 }

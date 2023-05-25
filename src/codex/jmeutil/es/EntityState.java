@@ -4,13 +4,13 @@
  */
 package codex.jmeutil.es;
 
-import codex.jmeutil.listen.Listenable;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.simsilica.es.EntityComponent;
 import com.simsilica.es.EntityData;
+import com.simsilica.es.EntityId;
 import com.simsilica.es.base.DefaultEntityData;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.function.Consumer;
 
 /**
  * Handles EntityData.
@@ -41,6 +41,12 @@ public class EntityState extends BaseAppState {
 	
 	public EntityData getEntityData() {
 		return ed;
+	}	
+	public <T extends EntityComponent> void forEachComponent(
+			EntityId id, Consumer<T> foreach, Class<? extends T>... types) {
+		for (Class<? extends T> type : types) {
+			foreach.accept(ed.getComponent(id, type));
+		}
 	}
 	
 }

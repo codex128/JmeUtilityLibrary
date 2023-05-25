@@ -10,8 +10,9 @@ import com.jme3.app.Application;
 import com.jme3.scene.Spatial;
 import com.simsilica.es.Entity;
 import com.simsilica.es.EntitySet;
-import com.jme3.math.Transform;
 import codex.jmeutil.es.components.UpdatableComponent;
+import com.simsilica.es.EntityData;
+import java.util.LinkedList;
 
 /**
  * System for updating entity, spatial, and physics properties.
@@ -19,64 +20,94 @@ import codex.jmeutil.es.components.UpdatableComponent;
  * @author gary
  * @param <T>
  */
-public abstract class ComponentUpdateState extends ESAppState {
+public class ComponentUpdateState extends ESAppState {
 	
-	protected EntitySet update;
-	private final Class<? extends UpdatableComponent> type;
+	LinkedList<UpdateSuite> update = new LinkedList<>();
+	ComponentUpdater[] preBucket;
 	
-	protected ComponentUpdateState(Class<? extends UpdatableComponent> type) {
-		this.type = type;
+	public ComponentUpdateState() {}
+	public ComponentUpdateState(ComponentUpdater... bucket) {
+		preBucket = bucket;
 	}
 	
 	@Override
 	protected void init(Application app) {
-		update = ed.getEntities(type);
+		if (preBucket != null) {
+			addAll(preBucket);
+			preBucket = null;
+		}
 	}
 	@Override
 	protected void cleanup(Application app) {
-		if (update == null) return;
-		update.release();
-		update = null;
+		for (UpdateSuite s : update) {
+			s.set.release();
+			s.set = null;
+		}
+		update.clear();
 	}
 	@Override
+	protected void onEnable() {}
+	@Override
+	protected void onDisable() {}
+	@Override
 	public void update(float tpf) {
-		if (update == null) return;
-		int direction;
-		for (Entity e : update) {
+		for (UpdateSuite suite : update) {
+			update(suite);
+		}
+	}	
+	private void update(UpdateSuite suite) {
+		suite.set.applyChanges();
+		for (Entity e : suite.set) {
 			Spatial spatial = visuals.getSpatial(e.getId());
-			EntityPhysics ep = physics.getEntityPhysics(e.getId());
-			direction = e.get(type).getUpdateDirection();
-			if (direction > UpdatableComponent.MIDPOINT) {
-				if (ep != null) updatePhysics(ep, e);
-				else if (spatial != null) updateSpatial(spatial, e);
+			EntityPhysics p = getEntityPhysics(e.getId(), null);
+			UpdatableComponent c = e.get(suite.updater.getComponentType());
+			if ((p == null || !suite.updater.updatePhysics(p, e))
+					&& (spatial == null || !suite.updater.updateSpatial(spatial, e))) {
+				suite.updater.updateEntity(e, spatial, p);
 			}
-			else {
-				updateEntity(e, spatial, ep);
-			}
-			if (!UpdatableComponent.isStable(direction)) {
-				ed.getComponent(e.getId(), type).setUpdateDirection(direction, true);
-			}
+			c.getUpdateDirection().increment();
+			ed.getComponent(e.getId(), suite.updater.getComponentType()).inheritUpdateDirection(c);
 		}
 	}
 	
-	/**
-	 * Updates spatial transform based on entity transform.
-	 * @param s spatial
-	 * @param e entity
-	 */
-	protected abstract void updateSpatial(Spatial s, Entity e);
-	/**
-	 * Updates entity transform based on spatial transform.
-	 * @param e entity
-	 * @param s spatial
-	 * @param p entity physics
-	 */
-	protected abstract void updateEntity(Entity e, Spatial s, EntityPhysics p);
-	/**
-	 * Updates physics transform based on entity transform.
-	 * @param p entity physics
-	 * @param e entity
-	 */
-	protected abstract void updatePhysics(EntityPhysics p, Entity e);
+	public void add(ComponentUpdater updater) {
+		update.addLast(new UpdateSuite(ed, updater));
+	}
+	public void addAll(ComponentUpdater... updaters) {
+		for (ComponentUpdater u : updaters) {
+			add(u);
+		}
+	}
+	
+	private UpdateSuite getSuite(Class<? extends UpdatableComponent> type) {
+		for (UpdateSuite s : update) {
+			if (s.updater.getComponentType().equals(type)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	public ComponentUpdater getUpdater(Class<? extends UpdatableComponent> type) {
+		UpdateSuite suite = getSuite(type);
+		if (suite != null) return suite.updater;
+		else return null;
+	}
+	public EntitySet getSet(Class<? extends UpdatableComponent> type) {
+		UpdateSuite suite = getSuite(type);
+		if (suite != null) return suite.set;
+		else return null;
+	}
+	
+	private static class UpdateSuite {
+		
+		EntitySet set;
+		ComponentUpdater updater;
+		
+		private UpdateSuite(EntityData ed, ComponentUpdater updater) {
+			set = ed.getEntities(updater.getComponentType());
+			this.updater = updater;
+		}
+		
+	}
 	
 }
