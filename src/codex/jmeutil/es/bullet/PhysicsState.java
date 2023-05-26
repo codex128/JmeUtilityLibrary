@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package codex.jmeutil.es;
+package codex.jmeutil.es.bullet;
 
-import codex.jmeutil.es.bullet.EntityPhysics;
+import codex.jmeutil.es.ESAppState;
 import codex.jmeutil.es.components.Physics;
 import codex.jmeutil.es.factory.PhysicsFactory;
 import codex.jmeutil.es.factory.PhysicsManufactureTools;
@@ -15,6 +15,7 @@ import com.simsilica.es.Entity;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.EntitySet;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * System for creating and managing physics bodies for entities.
@@ -27,6 +28,8 @@ public class PhysicsState extends ESAppState {
 	protected EntitySet phys;
 	protected PhysicsFactory factory = PhysicsFactory.DEFAULT_FACTORY;
 	
+	public PhysicsState() {}
+	
 	@Override
 	protected void init(Application app) {
 		if (bullet == null) {
@@ -38,6 +41,7 @@ public class PhysicsState extends ESAppState {
 	protected void cleanup(Application app) {
 		phys.release();
 		phys = null;
+		bodies.clear();
 	}	
 	@Override
 	protected void onEnable() {}
@@ -64,7 +68,7 @@ public class PhysicsState extends ESAppState {
 		getPhysicsSpace().add(ep);
 	}
 	private void destroyPhysics(Entity e) {
-		bodies.remove(e.getId());
+		EntityPhysics p = bodies.remove(e.getId());
 	}
 	private PhysicsSpace getPhysicsSpace() {
 		return bullet.getPhysicsSpace();

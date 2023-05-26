@@ -5,7 +5,6 @@
 package codex.jmeutil.es.bullet;
 
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -16,7 +15,11 @@ import com.jme3.math.Vector3f;
  * @author gary
  */
 public class EntityCharacterControl extends BetterCharacterControl implements EntityPhysics<PhysicsRigidBody> {
-		
+	
+	public EntityCharacterControl(float radius, float height, float mass) {
+		super(radius, height, mass);
+	}
+	
 	@Override
 	public PhysicsRigidBody getPhysicsBody() {
 		return getRigidBody();

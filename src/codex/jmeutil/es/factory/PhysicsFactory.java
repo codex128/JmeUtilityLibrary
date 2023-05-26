@@ -4,10 +4,12 @@
  */
 package codex.jmeutil.es.factory;
 
+import codex.jmeutil.es.bullet.EntityCharacterControl;
 import codex.jmeutil.es.bullet.EntityPhysics;
 import codex.jmeutil.es.bullet.EntityRigidBodyControl;
 import codex.jmeutil.es.components.Mass;
 import codex.jmeutil.es.components.Physics;
+import codex.jmeutil.es.components.Shape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.scene.Spatial;
@@ -28,24 +30,33 @@ public interface PhysicsFactory {
 			MERGED_BOX = "def_merged_box",
 			MERGED_HULL = "def_merged_hull",
 			MERGED_MESH = "def_merged_mesh",
-			MESH = "def_mesh";
+			MESH = "def_mesh",
+			CHARACTER = "def_character";
 	
 	public default EntityPhysics manufactureEntityPhysics(PhysicsManufactureTools tools) {
 		String type = tools.ed.getComponent(tools.entity, Physics.class).getType();
-		boolean auto = type.equals(AUTO);
-		CollisionShape shape = (!auto ? getCollisionShape(type, tools.spatial) : null);
-		EntityRigidBodyControl rigidbody;
-		if (shape != null) {
-			rigidbody = new EntityRigidBodyControl(shape, getMass(tools));
-		}
-		else if (auto) {
-			rigidbody = new EntityRigidBodyControl(getMass(tools));
+		if (!type.equals(CHARACTER)) {
+			boolean auto = type.equals(AUTO);
+			CollisionShape shape = (!auto ? getCollisionShape(type, tools.spatial) : null);
+			EntityRigidBodyControl rigidbody;
+			if (shape != null) {
+				rigidbody = new EntityRigidBodyControl(shape, getMass(tools));
+			}
+			else if (auto) {
+				rigidbody = new EntityRigidBodyControl(getMass(tools));
+			}
+			else {
+				return createPhysics(tools);
+			}
+			tools.spatial.addControl(rigidbody);
+			return rigidbody;
 		}
 		else {
-			return createPhysics(tools);
+			Shape shape = ModelFactory.getArgumentComponent(tools.ed, tools.entity, new Shape("cylinder", 1f, 5f));
+			EntityCharacterControl character = new EntityCharacterControl(shape.getParameters()[0], shape.getParameters()[1], getMass(tools));
+			tools.spatial.addControl(character);
+			return character;
 		}
-		tools.spatial.addControl(rigidbody);
-		return rigidbody;
 	}
 	public EntityPhysics createPhysics(PhysicsManufactureTools tools);
 	

@@ -6,7 +6,7 @@ package test;
 
 import codex.jmeutil.es.ESAppState;
 import codex.jmeutil.es.EntityState;
-import codex.jmeutil.es.PhysicsState;
+import codex.jmeutil.es.bullet.PhysicsState;
 import codex.jmeutil.es.VisualState;
 import codex.jmeutil.es.components.AngularVelocity;
 import codex.jmeutil.es.components.GameObject;

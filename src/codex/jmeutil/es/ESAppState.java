@@ -4,6 +4,7 @@
  */
 package codex.jmeutil.es;
 
+import codex.jmeutil.es.bullet.PhysicsState;
 import codex.jmeutil.es.bullet.EntityPhysics;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
