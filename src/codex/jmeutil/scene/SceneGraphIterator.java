@@ -15,7 +15,8 @@ import java.util.LinkedList;
  * @author gary
  */
 public class SceneGraphIterator implements Iterable<Spatial>, Iterator<Spatial> {
-
+	
+	Spatial current;
 	LinkedList<PathNode> path = new LinkedList<>();
 	LinkedList<Spatial> detach = new LinkedList<>();
 	
@@ -32,15 +33,33 @@ public class SceneGraphIterator implements Iterable<Spatial>, Iterator<Spatial> 
 	@Override
 	public boolean hasNext() {
 		trim();
-		return !path.isEmpty();
+		boolean next = !path.isEmpty();
+		if (!next) {
+			for (Spatial s : detach) {
+				s.removeFromParent();
+			}
+		}
+		return next;
 	}
 	@Override
 	public Spatial next() {
-		Spatial spatial = path.getLast().node.getChild(path.getLast().childIndex++);
-		if (spatial instanceof Node) {
-			path.addLast(new PathNode((Node)spatial));
+		current = path.getLast().node.getChild(path.getLast().childIndex++);
+		if (current instanceof Node) {
+			path.addLast(new PathNode((Node)current));
 		}
-		return spatial;
+		return current;
+	}
+	@Override
+	public void remove() {
+		detach.add(current);
+	}
+	
+	/**
+	 * Get the current spatial.
+	 * @return 
+	 */
+	public Spatial current() {
+		return current;
 	}
 	
 	/**
@@ -48,7 +67,9 @@ public class SceneGraphIterator implements Iterable<Spatial>, Iterator<Spatial> 
 	 * The children of the current spatial will not be iterated through.
 	 */
 	public void ignoreChildren() {
-		path.removeLast();
+		if (current instanceof Node) {
+			path.removeLast();
+		}
 	}
 	
 	/**

@@ -15,7 +15,6 @@ import com.simsilica.es.Entity;
 import com.simsilica.es.EntityId;
 import com.simsilica.es.EntitySet;
 import java.util.HashMap;
-import java.util.function.Consumer;
 
 /**
  * System for creating and managing physics bodies for entities.
@@ -42,7 +41,7 @@ public class PhysicsState extends ESAppState {
 		phys.release();
 		phys = null;
 		bodies.clear();
-	}	
+	}
 	@Override
 	protected void onEnable() {}
 	@Override

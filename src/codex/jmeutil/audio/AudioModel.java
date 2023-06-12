@@ -5,11 +5,9 @@
 package codex.jmeutil.audio;
 
 import codex.j3map.J3map;
-import codex.jmeutil.audio.SFXSpeaker;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
-import com.simsilica.es.EntityComponent;
 
 /**
  *
@@ -21,7 +19,6 @@ public class AudioModel {
 			BUFFER = "buffer",
 			STREAM = "stream";
 	
-	private String id;
 	private String sourceFile;
 	private float volume;
 	private float pitch;

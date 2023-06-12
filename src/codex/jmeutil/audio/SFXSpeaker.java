@@ -31,6 +31,7 @@ public class SFXSpeaker implements AudioSource {
 	Vector3f velocity = new Vector3f();
 	Vector3f direction = new Vector3f(0f, 0f, 1f);
 	Vector2f angles = new Vector2f(360f, 360f); // inner, outer
+	float volumeFactor = 1f;
 	
 	public SFXSpeaker(AudioData data, AudioModel model) {
 		this.data = data;
@@ -77,55 +78,59 @@ public class SFXSpeaker implements AudioSource {
 		}
         return renderer;
     }
+	protected void updateSourceParam(AudioParam param) {
+		if (isPlaying()) {
+			getRenderer().updateSourceParam(this, param);
+		}
+	}
+	public AudioModel getModel() {
+		return model;
+	}
 	public boolean supportsPositional() {
 		return data.getChannels() == 1;
+	}
+	public boolean isPlaying() {
+		return channel >= 0;
+	}
+	public float getVolumeFactor() {
+		return volumeFactor;
 	}
 	
 	public void setDryFilter(Filter dryfilter) {
 		this.dryfilter = dryfilter;
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.DryFilter);
-		}
+		updateSourceParam(AudioParam.DryFilter);
 	}
 	public void setReverbFilter(Filter reverbfilter) {
 		this.reverbfilter = reverbfilter;
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.ReverbFilter);
-		}
+		updateSourceParam(AudioParam.ReverbFilter);
 	}
 	public void setPosition(Vector3f position) {
 		this.position.set(position);
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.Position);
-		}
+		updateSourceParam(AudioParam.Position);
 	}
 	public void setVelocity(Vector3f velocity) {
 		this.velocity.set(velocity);
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.Velocity);
-		}
+		updateSourceParam(AudioParam.Velocity);
 	}
 	public void setDirection(Vector3f direction) {
 		this.direction.set(direction);
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.Direction);
-		}
+		updateSourceParam(AudioParam.Direction);
 	}
 	public void setInnerAngle(float inner) {
 		angles.x = inner;
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.InnerAngle);
-		}
+		updateSourceParam(AudioParam.InnerAngle);
 	}
 	public void setOuterAngle(float outer) {
 		angles.y = outer;
-		if (channel >= 0) {
-			getRenderer().updateSourceParam(this, AudioParam.OuterAngle);
-		}
+		updateSourceParam(AudioParam.OuterAngle);
 	}
 	public void setAngles(float inner, float outer) {
 		setInnerAngle(inner);
 		setOuterAngle(outer);
+	}
+	public void setVolumeFactor(float volFactor) {
+		this.volumeFactor = volFactor;
+		updateSourceParam(AudioParam.Volume);
 	}
 	
 	@Override
@@ -162,7 +167,7 @@ public class SFXSpeaker implements AudioSource {
 	}
 	@Override
 	public float getVolume() {
-		return model.getVolume();
+		return model.getVolume()*getVolumeFactor();
 	}
 	@Override
 	public float getTimeOffset() {
