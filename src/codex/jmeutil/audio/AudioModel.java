@@ -7,6 +7,7 @@ package codex.jmeutil.audio;
 import codex.j3map.J3map;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioKey;
 import com.jme3.audio.AudioNode;
 
 /**
@@ -45,6 +46,9 @@ public class AudioModel {
 	}
 	public AudioModel(J3map source) {
 		sourceFile = source.getString("source");
+		if (sourceFile == null) {
+			throw new NullPointerException("Could not locate audio source property!");
+		}
 		volume = source.getFloat("volume", 1f);
 		pitch = source.getFloat("pitch", 1f);
 		looping = source.getBoolean("looping", false);
@@ -172,6 +176,28 @@ public class AudioModel {
 		audio.setRefDistance(refDistance);
 		audio.setMaxDistance(maxDistance);
 		return audio;
+	}
+    public AudioData toAudioData(AssetManager assets) {
+        AudioKey key = new AudioKey(sourceFile, isStreaming(), true);
+		return assets.loadAudio(key);
+    }
+	public J3map exportProperties() {
+		J3map map = new J3map();
+		exportPropertiesTo(map);
+		return map;
+	}
+	public void exportPropertiesTo(J3map map) {
+		map.store("source", sourceFile);
+		map.store("volume", volume);
+		map.store("pitch", pitch);
+		map.store("looping", looping);
+		map.store("positional", positional);
+		map.store("directional", directional);
+		map.store("reverb", reverb);
+		map.store("time_offset", timeOffset);
+		map.store("ref_distance", refDistance);
+		map.store("max_distance", maxDistance);
+		map.store("data_type", dataType);
 	}
 	
 }
