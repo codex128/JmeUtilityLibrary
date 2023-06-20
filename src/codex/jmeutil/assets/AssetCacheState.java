@@ -41,6 +41,14 @@ public class AssetCacheState extends BaseAppState {
     @Override
     protected void onDisable() {}
     
+    public void loadAsset(String name) {
+        loadAsset(DEF_CACHE_TAG, name);
+    }
+    public void loadAsset(String tag, String name) {
+        AssetCache cache = cacheMap.get(tag);
+        if (cache == null) cache = createCache(tag);
+        cache.loadAsset(name);
+    }
     public <T> T fetchAsset(String name) {
         return fetchAsset(DEF_CACHE_TAG, name);
     }

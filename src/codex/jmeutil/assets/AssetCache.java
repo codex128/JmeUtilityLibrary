@@ -21,6 +21,13 @@ public class AssetCache extends HashMap<String, Object> {
         this.assetManager = assetManager;
     }
     
+    public void loadAsset(String name) {
+        Object asset = get(name);
+        if (asset == null) {
+            asset = assetManager.loadAsset(name);
+            putIfAbsent(name, asset);
+        }
+    }
     public <T> T fetchAsset(String name) {
         Object asset = get(name);
         if (asset == null) return createAsset(name);

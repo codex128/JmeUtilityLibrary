@@ -4,6 +4,7 @@
  */
 package codex.jmeutil.audio;
 
+import codex.jmeutil.listen.Listenable;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioContext;
 import com.jme3.audio.AudioData;
@@ -12,18 +13,18 @@ import com.jme3.audio.AudioParam;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.audio.AudioSource;
 import com.jme3.audio.Filter;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  *
  * @author gary
  */
-public class SFXSpeaker extends Node implements AudioSource {
+public class SFXSpeaker extends Node implements AudioSource, Listenable<SpeakerListener> {
 	
 	AudioModel model;
 	AudioData data;
@@ -31,9 +32,12 @@ public class SFXSpeaker extends Node implements AudioSource {
 	Filter dryfilter;
 	Filter reverbfilter;
 	AudioSource.Status status = AudioSource.Status.Stopped;
+    AudioSource.Status pstat = AudioSource.Status.Stopped;
 	Vector3f velocity = new Vector3f();
 	Vector2f angles = new Vector2f(360f, 360f); // inner, outer
+    Transform lastWorldTransform = new Transform();
 	float volumeFactor = 1f;
+    LinkedList<SpeakerListener> listeners = new LinkedList<>();
 	
 	public SFXSpeaker(AudioData data, AudioModel model) {
 		this.data = data;
@@ -49,8 +53,7 @@ public class SFXSpeaker extends Node implements AudioSource {
 		this(assets, model.getSourceFile(), model, cache);
 	}
 	public SFXSpeaker(AssetManager assets, String name, AudioModel model, boolean cache) {
-		AudioKey key = new AudioKey(name, model.isStreaming(), true);
-		data = assets.loadAudio(key);
+		data = model.toAudioData(assets);
 		this.model = model;
 	}
 	
@@ -72,6 +75,47 @@ public class SFXSpeaker extends Node implements AudioSource {
 	public void pause() {
 		getRenderer().pauseSource(this);
 	}
+    
+    @Override
+    public void updateLogicalState(float tpf) {
+        if (isPlaying()) {
+            Transform world = getWorldTransform();
+            if (!lastWorldTransform.getTranslation().equals(world.getTranslation())) {
+                lastWorldTransform.setTranslation(world.getTranslation());
+                updateSourceParam(AudioParam.Position);
+            }
+            if (!lastWorldTransform.getRotation().equals(world.getRotation())) {
+                lastWorldTransform.setRotation(world.getRotation());
+                updateSourceParam(AudioParam.Direction);
+            }
+        }
+        update(tpf);
+    }
+    /**
+     * Manually updates this speaker.
+     * Is used to track audio status and notify listeners on change. Does not need
+     * to be called if this speaker is attached to the scene graph.
+     * @param tpf 
+     */
+    public void manualUpdate(float tpf) {
+        if (getParent() == null) update(tpf);
+    }
+    protected void update(float tpf) {
+        if (status != pstat) {
+            if (null != status) switch (status) {
+                case Playing:
+                    notifyListeners(l -> l.onSpeakerPlay(this));
+                    break;
+                case Paused:
+                    notifyListeners(l -> l.onSpeakerPause(this));
+                    break;
+                case Stopped:
+                    notifyListeners(l -> l.onSpeakerStop(this));
+                    break;
+            }
+            pstat = status;
+        }
+    }
 	
 	protected AudioRenderer getRenderer() {
         AudioRenderer renderer = AudioContext.getAudioRenderer();
@@ -80,7 +124,7 @@ public class SFXSpeaker extends Node implements AudioSource {
 		}
         return renderer;
     }
-	protected void updateSourceParam(AudioParam param) {
+	public void updateSourceParam(AudioParam param) {
 		if (isPlaying()) {
 			getRenderer().updateSourceParam(this, param);
 		}
@@ -125,51 +169,6 @@ public class SFXSpeaker extends Node implements AudioSource {
 	public void setVolumeFactor(float volFactor) {
 		this.volumeFactor = volFactor;
 		updateSourceParam(AudioParam.Volume);
-	}
-	
-	@Override
-	public void setLocalTranslation(Vector3f translation) {
-		super.setLocalTranslation(translation);
-		updateSourceParam(AudioParam.Position);
-	}
-	@Override
-	public void setLocalTranslation(float x, float y, float z) {
-		super.setLocalTranslation(x, y, z);
-		updateSourceParam(AudioParam.Position);
-	}
-	@Override
-	public void setLocalRotation(Quaternion rotation) {
-		super.setLocalRotation(rotation);
-		updateSourceParam(AudioParam.Direction);
-	}
-	@Override
-	public void setLocalRotation(Matrix3f rotation) {
-		super.setLocalRotation(rotation);
-		updateSourceParam(AudioParam.Direction);
-	}
-	@Override
-	public SFXSpeaker move(Vector3f move) {
-		super.move(move);
-		updateSourceParam(AudioParam.Position);
-		return this;
-	}
-	@Override
-	public SFXSpeaker move(float x, float y, float z) {
-		super.move(x, y, z);
-		updateSourceParam(AudioParam.Position);
-		return this;
-	}
-	@Override
-	public SFXSpeaker rotate(Quaternion rotate) {
-		super.rotate(rotate);
-		updateSourceParam(AudioParam.Direction);
-		return this;
-	}
-	@Override
-	public SFXSpeaker rotate(float xAngle, float yAngle, float zAngle) {
-		super.rotate(xAngle, yAngle, zAngle);
-		updateSourceParam(AudioParam.Direction);
-		return this;
 	}
 	
 	@Override
@@ -261,5 +260,9 @@ public class SFXSpeaker extends Node implements AudioSource {
 	public boolean isPositional() {
 		return model.isPositional();
 	}
+    @Override
+    public Collection<SpeakerListener> getListeners() {
+        return listeners;
+    }
 	
 }

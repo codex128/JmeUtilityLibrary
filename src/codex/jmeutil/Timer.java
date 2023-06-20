@@ -37,20 +37,18 @@ public class Timer implements Listenable<TimerListener> {
 	LinkedList<TimerListener> listeners = new LinkedList<>();
 	CycleMode cycle = CycleMode.INFINITE;
 	int cycleNum = 0;
-	int cycleMax = 5;
-	
+	int cycleMax = 5;	
 	
 	public Timer(float duration) {
 		setDuration(duration);
-	}
-	
+	}	
 	
 	public void update() {
 		update(1f);
 	}
 	public void update(float tpf) {
-		if (start && (time += tpf) >= duration && duration >= 0f) {
-			time = duration;
+		if (start && (time += tpf) >= getDuration() && getDuration() >= 0f) {
+			time = getDuration();
 			cycleNum++;
 			boolean max = cycleNum == cycleMax;
 			if (cycle == CycleMode.ONCE || (cycle == CycleMode.DEFINED && max)) {				

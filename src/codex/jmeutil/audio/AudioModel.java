@@ -19,6 +19,35 @@ public class AudioModel {
 	public static final String
 			BUFFER = "buffer",
 			STREAM = "stream";
+    
+    public static final class Defaults {
+        public static float
+                volume = 1f,
+                pitch = 1f,
+                timeOffset = 0f,
+                refDistance = 10f,
+                maxDistance = 20f;
+        public static boolean
+                looping = false,
+                positional = true,
+                directional = false,
+                reverb = false;
+        public static String
+                dataType = BUFFER;
+        
+        public static void set(J3map def) {
+            volume = def.getFloat("volume", volume);
+            pitch = def.getFloat("pitch", pitch);
+            timeOffset = def.getFloat("time_offset", timeOffset);
+            refDistance = def.getFloat("ref_distance", refDistance);
+            maxDistance = def.getFloat("max_distance", maxDistance);
+            looping = def.getBoolean("looping", def.getBoolean("loop", looping));
+            positional = def.getBoolean("positional", positional);
+            directional = def.getBoolean("directional", directional);
+            reverb = def.getBoolean("reverb", reverb);
+            dataType = def.getString("data_type", dataType);
+        }
+    }
 	
 	private String sourceFile;
 	private float volume;
@@ -49,16 +78,16 @@ public class AudioModel {
 		if (sourceFile == null) {
 			throw new NullPointerException("Could not locate audio source property!");
 		}
-		volume = source.getFloat("volume", 1f);
-		pitch = source.getFloat("pitch", 1f);
-		looping = source.getBoolean("looping", false);
-		positional = source.getBoolean("positional", true);
-		directional = source.getBoolean("directional", false);
-		reverb = source.getBoolean("reverb", false);
-		timeOffset = source.getFloat("time_offset", 0f);
-		refDistance = source.getFloat("ref_distance", 10f);
-		maxDistance = source.getFloat("max_distance", 20f);
-		String type = source.getString("data_type", BUFFER);
+		volume = source.getFloat("volume", Defaults.volume);
+		pitch = source.getFloat("pitch", Defaults.pitch);
+		looping = source.getBoolean("looping", source.getBoolean("loop", Defaults.looping));
+		positional = source.getBoolean("positional", Defaults.positional);
+		directional = source.getBoolean("directional", Defaults.positional);
+		reverb = source.getBoolean("reverb", Defaults.reverb);
+		timeOffset = source.getFloat("time_offset", Defaults.timeOffset);
+		refDistance = source.getFloat("ref_distance", Defaults.refDistance);
+		maxDistance = source.getFloat("max_distance", Defaults.maxDistance);
+		String type = source.getString("data_type", Defaults.dataType);
 		if (type.equals(BUFFER)) dataType = AudioData.DataType.Buffer;
 		else if (type.equals(STREAM)) dataType = AudioData.DataType.Stream;
 		else {
