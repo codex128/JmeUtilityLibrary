@@ -6,6 +6,8 @@ package codex.jmeutil.es.bullet;
 
 import codex.jmeutil.es.ESAppState;
 import com.jme3.app.Application;
+import com.simsilica.es.EntityId;
+import java.util.HashMap;
 
 /**
  *
@@ -13,7 +15,7 @@ import com.jme3.app.Application;
  */
 public class PhysicsRegistry extends ESAppState {
 
-    
+    HashMap<EntityId, PhysicsEntityMapping> registry = new HashMap<>();
     
     @Override
     protected void init(Application app) {}
